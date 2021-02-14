@@ -211,7 +211,7 @@
     <a class="link-style" href={svgUrl}>Link to SVG</a>
   </button>
   <button class="button-style">
-    <a class="link-style" href={url} on:click={onSave}> Save </a>
+    <a class="link-style" on:click={onSave}> Save </a>
   </button>
   (markdown is base64 encoded for these urls)
 </div>
