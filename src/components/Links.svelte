@@ -89,6 +89,25 @@
     console.log('event', event);
   };
 
+  const onSave = (event) => {
+    event.preventDefault();
+    const params = new URLSearchParams(window.location.search);
+    const recordId = params.get('recordId');
+
+    window.$VFRM.Manager.getController('MermaidController').save(
+      recordId,
+      code,
+      (result, event) => {
+        if (event.status) {
+          window.alert('Saved successfully');
+        } else {
+          window.alert(`Error: ${event.message}`);
+        }
+      },
+      { escape: false }
+    );
+  };
+
   const onCopyMarkdown = (event) => {
     event.target.select();
     document.execCommand('Copy');
@@ -102,6 +121,7 @@
   let imagemodeselected = 'auto';
   let userimagewidth = 1920;
   let userimageheight = 1080;
+  let code;
 
   const unsubscribe = codeStore.subscribe((state) => {
     b64Code = Base64.encodeURI(JSON.stringify(state));
@@ -109,6 +129,7 @@
     iUrl = `https://mermaid.ink/img/${b64Code}`;
     svgUrl = `https://mermaid.ink/svg/${b64Code}`;
     mdCode = `[![](${iUrl})](${window.location.protocol}//${window.location.host}${window.location.pathname}#/edit/${b64Code})`;
+    code = state.code;
   });
 </script>
 
@@ -188,6 +209,9 @@
   </button>
   <button class="button-style">
     <a class="link-style" href={svgUrl}>Link to SVG</a>
+  </button>
+  <button class="button-style">
+    <a class="link-style" href={url} on:click={onSave}> Save </a>
   </button>
   (markdown is base64 encoded for these urls)
 </div>

@@ -21,7 +21,30 @@
     let hisCode =
       historyList.length > 0 ? historyList[historyList.length - 1] : null;
 
-    if (params.data) {
+    let graphCode = await new Promise((resolve, reject) => {
+      const params = new URLSearchParams(window.location.search);
+      const recordId = params.get('recordId');
+
+      window.$VFRM.Manager.getController('MermaidController').load(
+        recordId,
+        (result, event) => {
+          if (event.status) {
+            resolve(result);
+          } else {
+            window.alert(`Error: ${event.message}`);
+          }
+        },
+        { escape: false }
+      );
+    });
+
+    if (graphCode) {
+      updateCodeStore({
+        code: graphCode,
+        mermaid: {},
+        updateEditor: true,
+      });
+    } else if (params.data) {
       fromUrl(params.data);
     } else if (hisCode) {
       updateCodeStore({
